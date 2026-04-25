@@ -16,7 +16,7 @@ An AI voice concierge for Bangalore rentals. Tell it what you actually need, and
 
 ```bash
 pnpm install
-cp .env.example .env
+cp .env.example .env.local
 # fill in DATABASE_URL (Neon free tier works in 30s)
 pnpm db:push
 pnpm dev
@@ -47,7 +47,11 @@ See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md). One-click on Vercel after pointi
 
 ## Bolna agent setup
 
-See [`docs/BOLNA_AGENT_SETUP.md`](docs/BOLNA_AGENT_SETUP.md). The system prompt lives at [`agent/system-prompt.md`](agent/system-prompt.md) — paste it into platform.bolna.ai and configure the four function tools in [`agent/tools.json`](agent/tools.json) to point at your deployed `/api/agent/*` routes.
+See [`docs/BOLNA_AGENT_SETUP.md`](docs/BOLNA_AGENT_SETUP.md). The system prompt lives at [`agent/system-prompt.md`](agent/system-prompt.md) — paste it into platform.bolna.ai and configure the five function tools in [`agent/tools.json`](agent/tools.json) to point at your deployed `/api/agent/*` routes.
+
+## Submission answers
+
+Use [`docs/SUBMISSION_ANSWERS.md`](docs/SUBMISSION_ANSWERS.md) for the copy-paste answers to the AI Solutions Engineer and Founder's Office forms.
 
 ## License
 

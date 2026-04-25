@@ -25,7 +25,7 @@ TheNiceBroker is a submission for three Bolna assignments (Full Stack, AI Soluti
 - **Framework:** Next.js 15 (App Router, RSC), React 19, TypeScript strict (`noUncheckedIndexedAccess`)
 - **Styling:** Tailwind v4 (CSS-first config in `globals.css`)
 - **DB:** Postgres via Neon (`@neondatabase/serverless`) + Drizzle ORM
-- **Voice layer:** Bolna (platform.bolna.ai) — system prompt + 4 function tools, called via webhooks against `/api/agent/*` routes
+- **Voice layer:** Bolna (platform.bolna.ai) — system prompt + 5 function tools, called via webhooks against `/api/agent/*` routes
 - **Hosting:** Vercel (one-click)
 - **Tests:** Vitest (only the comparison engine — not chasing coverage)
 - **Package manager:** pnpm
@@ -73,7 +73,7 @@ Status legend: `[x]` done, `[~]` in progress, `[ ]` pending.
 - [x] Phase 4 — API: Bolna webhook receiver, agent function-call endpoints (search/compare/upsert-lead/book-visit/send-summary). Committed.
 - [x] Phase 5 — Dashboard: Concierge inbox, call detail + transcript, listing comparison, visits calendar, unit economics. Committed.
 - [x] Phase 6 — Agent assets: system prompt, conversation flow, tool definitions, eval cases — all in `agent/`. Committed.
-- [~] Phase 7 — Docs: ARCHITECTURE, DEPLOYMENT, BOLNA_AGENT_SETUP, DEMO_SCRIPT.
+- [x] Phase 7 — Docs: ARCHITECTURE, DEPLOYMENT, BOLNA_AGENT_SETUP, DEMO_SCRIPT, SUBMISSION_ANSWERS. Committed.
 - [ ] Phase 8 — CI workflow + create GitHub repo (`gh`) + push.
 - [ ] Phase 9 — Assignment deck: single base + role-tailored covers for FSE / AISE / Founder's.
 
@@ -112,10 +112,11 @@ Outside the build:
 - Uses Zod for inbound validation. Logs raw payloads for debugging — review and tighten once we see real Bolna events.
 
 **Function tools (agent → us, called mid-call):**
+- `POST /api/agent/upsert-lead` — `{ call_id, lead }` → `{ lead_id }`
 - `POST /api/agent/search` — `{ filters }` → `{ listings, count }`
-- `POST /api/agent/compare` — `{ listingIds }` → `{ comparison }`
-- `POST /api/agent/book-visit` — `{ listingId, slotIso, leadId }` → `{ visitId, confirmedSlotIso }`
-- `POST /api/agent/send-summary` — `{ leadId, listingIds, channel }` → `{ sent }`
+- `POST /api/agent/compare` — `{ listing_ids }` → `{ comparison }`
+- `POST /api/agent/book-visit` — `{ listing_id, slot_iso, lead_id }` → `{ visit_id, confirmed_slot_iso }`
+- `POST /api/agent/send-summary` — `{ lead_id, listing_ids, channel }` → `{ sent }`
 
 ## Commands
 
