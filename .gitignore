@@ -40,5 +40,8 @@ next-env.d.ts
 # testing
 coverage/
 
+# local presentation build workspace
+deck-workspace/
+
 # drizzle
 drizzle/meta/_journal.json.bak

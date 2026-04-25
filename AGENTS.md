@@ -75,7 +75,7 @@ Status legend: `[x]` done, `[~]` in progress, `[ ]` pending.
 - [x] Phase 6 — Agent assets: system prompt, conversation flow, tool definitions, eval cases — all in `agent/`. Committed.
 - [x] Phase 7 — Docs: ARCHITECTURE, DEPLOYMENT, BOLNA_AGENT_SETUP, DEMO_SCRIPT, SUBMISSION_ANSWERS. Committed.
 - [~] Phase 8 — CI workflow + create GitHub repo (`gh`) + push.
-- [ ] Phase 9 — Assignment deck: single base + role-tailored covers for FSE / AISE / Founder's.
+- [x] Phase 9 — Assignment deck: editable PPTX + preview contact sheet under `docs/deck/`. Committed.
 
 Outside the build:
 - [ ] User configures Bolna agent on platform.bolna.ai (paste prompt, wire tools to deployed URLs).
