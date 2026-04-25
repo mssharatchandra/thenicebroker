@@ -68,10 +68,10 @@ thenicebroker/
 Status legend: `[x]` done, `[~]` in progress, `[ ]` pending.
 
 - [x] Phase 1 — Foundation: Next.js 15 + Tailwind v4 + TS strict + env scaffolding. Committed.
-- [~] Phase 2 — Domain layer: `InventoryProvider` interface, 25 Bangalore mock listings, comparison engine + tests.
-- [ ] Phase 3 — Database: Drizzle schema (calls, leads, visits, shortlists), Neon connection, migrations.
-- [ ] Phase 4 — API: Bolna webhook receiver, agent function-call endpoints (search/compare/book-visit/send-summary).
-- [ ] Phase 5 — Dashboard: Concierge inbox, call detail + transcript, listing comparison, visits calendar, unit economics.
+- [x] Phase 2 — Domain layer: `InventoryProvider` interface, 25 Bangalore mock listings, comparison engine + tests. Committed.
+- [x] Phase 3 — Database: Drizzle schema (calls, leads, visits, shortlists), Neon connection, migrations. Committed.
+- [x] Phase 4 — API: Bolna webhook receiver, agent function-call endpoints (search/compare/upsert-lead/book-visit/send-summary). Committed.
+- [~] Phase 5 — Dashboard: Concierge inbox, call detail + transcript, listing comparison, visits calendar, unit economics.
 - [ ] Phase 6 — Agent assets: system prompt, conversation flow, tool definitions, eval cases — all in `agent/`.
 - [ ] Phase 7 — Docs: ARCHITECTURE, DEPLOYMENT, BOLNA_AGENT_SETUP, DEMO_SCRIPT.
 - [ ] Phase 8 — CI workflow + create GitHub repo (`gh`) + push.
