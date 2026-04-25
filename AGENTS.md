@@ -72,8 +72,8 @@ Status legend: `[x]` done, `[~]` in progress, `[ ]` pending.
 - [x] Phase 3 — Database: Drizzle schema (calls, leads, visits, shortlists), Neon connection, migrations. Committed.
 - [x] Phase 4 — API: Bolna webhook receiver, agent function-call endpoints (search/compare/upsert-lead/book-visit/send-summary). Committed.
 - [x] Phase 5 — Dashboard: Concierge inbox, call detail + transcript, listing comparison, visits calendar, unit economics. Committed.
-- [~] Phase 6 — Agent assets: system prompt, conversation flow, tool definitions, eval cases — all in `agent/`.
-- [ ] Phase 7 — Docs: ARCHITECTURE, DEPLOYMENT, BOLNA_AGENT_SETUP, DEMO_SCRIPT.
+- [x] Phase 6 — Agent assets: system prompt, conversation flow, tool definitions, eval cases — all in `agent/`. Committed.
+- [~] Phase 7 — Docs: ARCHITECTURE, DEPLOYMENT, BOLNA_AGENT_SETUP, DEMO_SCRIPT.
 - [ ] Phase 8 — CI workflow + create GitHub repo (`gh`) + push.
 - [ ] Phase 9 — Assignment deck: single base + role-tailored covers for FSE / AISE / Founder's.
 
