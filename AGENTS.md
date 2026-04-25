@@ -74,7 +74,7 @@ Status legend: `[x]` done, `[~]` in progress, `[ ]` pending.
 - [x] Phase 5 — Dashboard: Concierge inbox, call detail + transcript, listing comparison, visits calendar, unit economics. Committed.
 - [x] Phase 6 — Agent assets: system prompt, conversation flow, tool definitions, eval cases — all in `agent/`. Committed.
 - [x] Phase 7 — Docs: ARCHITECTURE, DEPLOYMENT, BOLNA_AGENT_SETUP, DEMO_SCRIPT, SUBMISSION_ANSWERS. Committed.
-- [~] Phase 8 — CI workflow + create GitHub repo (`gh`) + push.
+- [x] Phase 8 — CI workflow + create GitHub repo (`gh`) + push. Committed and pushed.
 - [x] Phase 9 — Assignment deck: editable PPTX + preview contact sheet under `docs/deck/`. Committed.
 
 Outside the build:
