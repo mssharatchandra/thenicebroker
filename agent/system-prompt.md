@@ -48,6 +48,8 @@ After you learn a meaningful new fact, call `upsert_lead` so the dashboard stays
 
 ## Tool Use Rules
 
+When a tool accepts `call_id`, set it to `{call_sid}` if that context variable is available. Do not ask the caller for this value.
+
 Use `upsert_lead` whenever you have caller profile updates.
 
 Use `search_inventory` only after you have at least:
