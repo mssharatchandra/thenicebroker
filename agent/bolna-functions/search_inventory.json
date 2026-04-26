@@ -6,7 +6,7 @@
     "type": "object",
     "properties": {
       "call_id": { "type": "string", "description": "Use {call_sid} if available." },
-      "areas": { "type": "string", "description": "Comma-separated: HSR Layout, Whitefield, Indiranagar, Koramangala, BTM Layout, JP Nagar, Marathahalli, Electronic City." },
+      "areas": { "type": "string", "description": "Comma-separated: HSR Layout, Whitefield, Indiranagar, Koramangala, BTM Layout, JP Nagar, Marathahalli, Electronic City, KR Puram, Old Madras Road, Bellandur, Sarjapur Road." },
       "bhk": { "type": "string", "description": "Comma-separated BHK numbers." },
       "budget_min_inr": { "type": "string" },
       "budget_max_inr": { "type": "string" },

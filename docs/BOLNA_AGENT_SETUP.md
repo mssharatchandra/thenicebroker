@@ -38,6 +38,8 @@ Primary language: English. Add Hindi as a secondary language only if you want to
 
 Paste the full prompt from `agent/system-prompt.md` into **Agent Prompt**.
 
+If you already created the agent before the latest robustness pass, re-paste the prompt so it asks for name/phone near the beginning and uses available visit slots instead of inventing calendar language.
+
 Settings:
 
 - Timezone: `Asia/Kolkata`
@@ -75,6 +77,8 @@ Files:
 Use `agent/tools.json` as the human-readable fallback if you need to fill the UI field-by-field.
 
 Both files use flat parameters because they are easier to enter in Bolna's tool builder. The API also accepts nested JSON if needed.
+
+If you already added the tools, the existing endpoint URLs can stay. The only useful optional update is `book_visit`: its `slot_iso` description now allows `earliest` when the caller says any available slot.
 
 Replace:
 

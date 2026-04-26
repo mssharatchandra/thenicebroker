@@ -14,6 +14,10 @@ const areas: [Area, ...Area[]] = [
   "JP Nagar",
   "Marathahalli",
   "Electronic City",
+  "KR Puram",
+  "Old Madras Road",
+  "Bellandur",
+  "Sarjapur Road",
 ];
 
 const furnishingValues: [Furnishing, ...Furnishing[]] = ["unfurnished", "semi", "fully"];
@@ -120,6 +124,7 @@ export async function POST(req: Request) {
     carpet_sqft: r.listing.carpetAreaSqft,
     age_years: r.listing.ageYears,
     available_from: r.listing.availableFromIso,
+    available_visit_slots: r.listing.availableVisitSlotsIso?.slice(0, 3) ?? [],
     score: r.score,
     why_it_fits: r.reasons,
     honest_tradeoffs: r.flags,

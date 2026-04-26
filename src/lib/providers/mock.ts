@@ -1,4 +1,4 @@
-import { BANGALORE_LISTINGS } from "../data/bangalore-listings";
+import { EXPANDED_BANGALORE_LISTINGS } from "../data/expanded-bangalore-listings";
 import type {
   Amenity,
   InventoryProvider,
@@ -23,8 +23,12 @@ import type {
 export class MockInventoryProvider implements InventoryProvider {
   private readonly listings: readonly Listing[];
 
-  constructor(listings: readonly Listing[] = BANGALORE_LISTINGS) {
+  constructor(listings: readonly Listing[] = EXPANDED_BANGALORE_LISTINGS) {
     this.listings = listings;
+  }
+
+  async listAll(): Promise<Listing[]> {
+    return [...this.listings].sort((a, b) => a.id.localeCompare(b.id));
   }
 
   async count(): Promise<number> {

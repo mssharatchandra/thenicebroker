@@ -8,7 +8,7 @@
       "call_id": { "type": "string", "description": "Use {call_sid} if available." },
       "lead_id": { "type": "string", "description": "Optional if call_id is available and upsert_lead was called." },
       "listing_id": { "type": "string" },
-      "slot_iso": { "type": "string", "description": "ISO datetime with timezone, e.g. 2026-04-27T17:30:00+05:30." },
+      "slot_iso": { "type": "string", "description": "ISO datetime with timezone, e.g. 2026-04-27T17:30:00+05:30. Use earliest if caller says any available slot." },
       "channel": { "type": "string", "enum": ["in-person", "video"] },
       "notes": { "type": "string" }
     },

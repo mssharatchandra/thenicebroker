@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { calls, getDb, isDbConfigured, leads } from "@/lib/db";
 import { log } from "@/lib/logger";
 import { asBoolean, asNumber, asRecord, asString, parseNumberArray, parseStringArray } from "@/lib/api/payload";
@@ -71,12 +71,12 @@ export async function POST(req: Request) {
     internalCallId = call?.id ?? null;
   }
 
-  // Find or create a lead for this call.
-  const existing = internalCallId
-    ? await db.query.leads.findFirst({ where: eq(leads.callId, internalCallId) })
-    : lead.phone
-      ? await db.query.leads.findFirst({ where: eq(leads.phone, lead.phone) })
-      : null;
+  const existing = await findExistingLead({
+    db,
+    internalCallId,
+    phone: lead.phone,
+    email: lead.email,
+  });
 
   const patch = {
     name: lead.name,
@@ -121,6 +121,49 @@ export async function POST(req: Request) {
 
   log.info("agent.upsert_lead: created", { call_id: parsed.data.call_id, lead_id: inserted?.id });
   return NextResponse.json({ ok: true, lead_id: inserted?.id, action: "created" });
+}
+
+async function findExistingLead({
+  db,
+  internalCallId,
+  phone,
+  email,
+}: {
+  db: ReturnType<typeof getDb>;
+  internalCallId: string | null;
+  phone?: string;
+  email?: string;
+}) {
+  if (internalCallId) {
+    const byCall = await db.query.leads.findFirst({ where: eq(leads.callId, internalCallId) });
+    if (byCall) return byCall;
+  }
+
+  if (phone) {
+    const byPhone = await db.query.leads.findFirst({ where: eq(leads.phone, phone) });
+    if (byPhone) return byPhone;
+  }
+
+  if (email) {
+    const byEmail = await db.query.leads.findFirst({ where: eq(leads.email, email) });
+    if (byEmail) return byEmail;
+  }
+
+  // Bolna chat tests often emit profile updates before a call webhook exists.
+  // Merge those updates into the latest anonymous row instead of creating a
+  // new "Unknown caller" on every tool call.
+  const recent = await db.query.leads.findMany({
+    orderBy: [desc(leads.updatedAt)],
+    limit: 8,
+  });
+  const cutoff = Date.now() - 60 * 60 * 1000;
+  return (
+    recent.find((lead) => {
+      const recentEnough = lead.updatedAt.getTime() >= cutoff;
+      const anonymous = !lead.phone && !lead.email;
+      return recentEnough && anonymous;
+    }) ?? null
+  );
 }
 
 function coerceLeadPayload(raw: unknown): unknown {

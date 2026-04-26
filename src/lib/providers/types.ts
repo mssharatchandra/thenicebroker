@@ -2,7 +2,7 @@
  * Domain types for rental inventory.
  *
  * The InventoryProvider interface is the seam between "where the data lives"
- * and "everything else." The mock provider ships 25 hand-curated Bangalore
+ * and "everything else." The mock provider ships realistic Bangalore
  * listings; production providers (NoBroker partnership, Housing.com API,
  * a community-pinned dataset like bengaluru.rent) plug in here without
  * touching the comparison engine, the agent, or the UI.
@@ -16,7 +16,11 @@ export type Area =
   | "BTM Layout"
   | "JP Nagar"
   | "Marathahalli"
-  | "Electronic City";
+  | "Electronic City"
+  | "KR Puram"
+  | "Old Madras Road"
+  | "Bellandur"
+  | "Sarjapur Road";
 
 export type Furnishing = "unfurnished" | "semi" | "fully";
 export type Parking = "none" | "bike" | "car" | "both";
@@ -72,6 +76,11 @@ export interface Listing {
   nearestTechParkName: string | null;
   coords: Coords;
   contactType: ContactType;
+  /**
+   * Deterministic demo visit slots. A real provider would expose owner/field
+   * team calendar availability through the same shape.
+   */
+  availableVisitSlotsIso?: string[];
   description: string;
   /** 2-3 things genuinely worth highlighting. */
   highlights: string[];
@@ -109,6 +118,7 @@ export interface ScoredListing {
 }
 
 export interface InventoryProvider {
+  listAll(): Promise<Listing[]>;
   search(filters: SearchFilters): Promise<ScoredListing[]>;
   getById(id: string): Promise<Listing | null>;
   getMany(ids: string[]): Promise<Listing[]>;

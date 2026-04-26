@@ -123,7 +123,9 @@ async function getDatabaseDashboardData(): Promise<DashboardData> {
   });
 
   const callIds = new Set(callRows.map((call) => call.id));
-  const orphanLeads = leadRows.filter((lead) => !lead.callId || !callIds.has(lead.callId));
+  const orphanLeads = leadRows
+    .filter((lead) => !lead.callId || !callIds.has(lead.callId))
+    .filter((lead) => lead.name || lead.phone);
   for (const lead of orphanLeads) {
     dashboardCalls.push({
       id: lead.id,

@@ -3,7 +3,14 @@ export function asRecord(value: unknown): Record<string, unknown> | null {
 }
 
 export function asString(value: unknown): string | undefined {
-  return typeof value === "string" && value.trim() !== "" ? value.trim() : undefined;
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  const normalized = trimmed.toLowerCase();
+  if (["null", "undefined", "n/a", "na"].includes(normalized)) return undefined;
+  if (/^%\([^)]+\)s$/.test(trimmed)) return undefined;
+  if (/^\{\{[^}]+\}\}$/.test(trimmed)) return undefined;
+  return trimmed;
 }
 
 export function asNumber(value: unknown): number | undefined {
@@ -28,15 +35,15 @@ export function asBoolean(value: unknown): boolean | undefined {
 export function parseStringArray(value: unknown): string[] | undefined {
   if (Array.isArray(value)) {
     const values = value
-      .map((v) => (typeof v === "string" ? v.trim() : undefined))
+      .map((v) => asString(v))
       .filter((v): v is string => Boolean(v));
     return values.length ? values : undefined;
   }
   if (typeof value !== "string" || value.trim() === "") return undefined;
   const values = value
     .split(",")
-    .map((v) => v.trim())
-    .filter(Boolean);
+    .map((v) => asString(v))
+    .filter((v): v is string => Boolean(v));
   return values.length ? values : undefined;
 }
 

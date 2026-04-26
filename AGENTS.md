@@ -97,6 +97,10 @@ Outside the build:
 | 2026-04-26 | Agent endpoints accept both nested JSON and flat Bolna tool parameters | Bolna's custom tool UI is easier to configure with flat fields; backend remains compatible with repo-native schemas |
 | 2026-04-26 | Neon schema applied to the user's database | Vercel only needs env vars + redeploy before live tool testing |
 | 2026-04-26 | Bolna function JSON split into one file per function | Bolna's custom function modal expects a single object; pasting an array raises "Function name must be a string" |
+| 2026-04-26 | Expanded mock inventory to 76 listings across 12 Bangalore areas with deterministic visit slots | Chat testing showed sparse inventory and weak slot coverage; assignment demo needs realistic fallback breadth |
+| 2026-04-26 | Added Leads and Demand dashboard tabs | Shows captured renter profiles, inventory coverage, and area-demand signal beyond the call inbox |
+| 2026-04-26 | Prompt now asks for name/phone near the beginning | Prevents anonymous duplicate leads and makes bookings/summaries feel production-real |
+| 2026-04-26 | Upsert now ignores placeholder values and merges recent anonymous chat rows | Bolna chat can send partial tool calls before call IDs exist; backend should absorb that gracefully |
 
 ## What's intentionally *not* built (and why)
 

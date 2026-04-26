@@ -46,7 +46,7 @@
         "call_id": { "type": "string", "description": "Use {call_sid} if available." },
         "areas": {
           "type": "string",
-          "description": "Comma-separated: HSR Layout, Whitefield, Indiranagar, Koramangala, BTM Layout, JP Nagar, Marathahalli, Electronic City."
+          "description": "Comma-separated: HSR Layout, Whitefield, Indiranagar, Koramangala, BTM Layout, JP Nagar, Marathahalli, Electronic City, KR Puram, Old Madras Road, Bellandur, Sarjapur Road."
         },
         "bhk": { "type": "string", "description": "Comma-separated BHK numbers, e.g. 2 or 2,3." },
         "budget_min_inr": { "type": "number" },
@@ -98,7 +98,7 @@
         "call_id": { "type": "string", "description": "Use {call_sid} if available." },
         "lead_id": { "type": "string", "description": "Optional; can be omitted if call_id is available and upsert_lead was called." },
         "listing_id": { "type": "string" },
-        "slot_iso": { "type": "string", "description": "ISO datetime with timezone, e.g. 2026-04-27T17:30:00+05:30." },
+        "slot_iso": { "type": "string", "description": "ISO datetime with timezone, e.g. 2026-04-27T17:30:00+05:30. You may also use earliest if the caller says any available slot." },
         "channel": { "type": "string", "enum": ["in-person", "video"], "default": "in-person" },
         "notes": { "type": "string" }
       }

@@ -58,7 +58,7 @@ export async function POST(req: Request) {
 
   const db = getDb();
   const leadId = await resolveLeadId(db, parsed.data.lead_id, parsed.data.call_id);
-  const scheduledFor = parseSlot(parsed.data.slot_iso);
+  const scheduledFor = parseSlot(parsed.data.slot_iso, listing.availableVisitSlotsIso);
 
   if (!scheduledFor) {
     return NextResponse.json(
@@ -168,7 +168,11 @@ async function createFallbackLead(db: ReturnType<typeof getDb>, callId?: string)
   return inserted?.id ?? null;
 }
 
-function parseSlot(value: string): Date | null {
+function parseSlot(value: string, availableSlots: string[] = []): Date | null {
+  if (isEarliestSlotRequest(value) && availableSlots.length > 0) {
+    return new Date(availableSlots[0]!);
+  }
+
   const direct = new Date(value);
   if (!Number.isNaN(direct.getTime())) return direct;
 
@@ -205,6 +209,18 @@ function parseSlot(value: string): Date | null {
   const mm = String(minute).padStart(2, "0");
   const parsed = new Date(`${year}-${month}-${day}T${hh}:${mm}:00+05:30`);
   return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function isEarliestSlotRequest(value: string): boolean {
+  const lower = value.toLowerCase();
+  return [
+    "earliest",
+    "any",
+    "whenever",
+    "available",
+    "next available",
+    "first available",
+  ].some((phrase) => lower.includes(phrase));
 }
 
 function toIndiaIso(date: Date): string {
