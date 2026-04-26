@@ -143,8 +143,7 @@ pnpm db:studio      # open drizzle studio
 ## Git conventions
 
 - Commits use conventional-commit prefixes (`chore:`, `feat:`, `feat(agent):`, `feat(ui):`, `feat(api):`, `feat(db):`, `test:`, `docs:`, `ci:`, `fix:`).
-- Local git config in this repo: `mssharatchandra@gmail.com` (personal). Global config is the user's work email — overridden per-repo deliberately.
-- Repo will be public on GitHub from day one (`gh repo create thenicebroker --public`).
+- Repo is public on GitHub.
 
 ## Handoff checklist (if you're an LLM picking this up)
 
