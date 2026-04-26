@@ -63,6 +63,12 @@ Header:
 x-bolna-webhook-secret: <BOLNA_WEBHOOK_SECRET>
 ```
 
+If the Bolna webhook UI does not allow custom headers, use this demo fallback URL:
+
+```text
+POST {{APP_URL}}/api/bolna/webhook?secret=<BOLNA_WEBHOOK_SECRET>
+```
+
 ## 4. Chat Test
 
 Use this first test message:

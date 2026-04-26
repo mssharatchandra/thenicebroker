@@ -59,6 +59,7 @@ The app also accepts:
 
 - `x-webhook-secret`
 - `Authorization: Bearer <BOLNA_WEBHOOK_SECRET>`
+- `?secret=<BOLNA_WEBHOOK_SECRET>` as a demo fallback if the webhook UI cannot send custom headers
 
 ## Smoke Test
 

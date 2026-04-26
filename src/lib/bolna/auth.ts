@@ -9,10 +9,12 @@ import { env } from "../env";
  */
 export function verifyWebhookSecret(req: Request): boolean {
   const expected = env.BOLNA_WEBHOOK_SECRET;
+  const url = new URL(req.url);
   const candidates = [
     req.headers.get("x-webhook-secret"),
     req.headers.get("x-bolna-webhook-secret"),
     stripBearer(req.headers.get("authorization")),
+    url.searchParams.get("secret"),
   ].filter((v): v is string => typeof v === "string" && v.length > 0);
 
   for (const got of candidates) {
