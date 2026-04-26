@@ -1,0 +1,33 @@
+{
+  "name": "book_visit",
+  "description": "Use only after the caller chooses a listing and confirms a concrete visit date and time.",
+  "pre_call_message": "I am booking that visit now.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "call_id": { "type": "string", "description": "Use {call_sid} if available." },
+      "lead_id": { "type": "string", "description": "Optional if call_id is available and upsert_lead was called." },
+      "listing_id": { "type": "string" },
+      "slot_iso": { "type": "string", "description": "ISO datetime with timezone, e.g. 2026-04-27T17:30:00+05:30." },
+      "channel": { "type": "string", "enum": ["in-person", "video"] },
+      "notes": { "type": "string" }
+    },
+    "required": ["listing_id", "slot_iso"]
+  },
+  "key": "custom_task",
+  "value": {
+    "method": "POST",
+    "param": {
+      "call_id": "%(call_id)s",
+      "lead_id": "%(lead_id)s",
+      "listing_id": "%(listing_id)s",
+      "slot_iso": "%(slot_iso)s",
+      "channel": "%(channel)s",
+      "notes": "%(notes)s"
+    },
+    "url": "{{APP_URL}}/api/agent/book-visit",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

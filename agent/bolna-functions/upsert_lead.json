@@ -1,0 +1,58 @@
+{
+  "name": "upsert_lead",
+  "description": "Use this whenever you learn or update the renter's profile: name, phone, preferred areas, BHK, budget, move-in date, occupants, parking, pets, veg-only, furnishing, WFH, language, urgency, or notes. Send only what is known.",
+  "pre_call_message": "Let me note that preference.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "call_id": { "type": "string", "description": "Use {call_sid} if available." },
+      "name": { "type": "string" },
+      "phone": { "type": "string" },
+      "email": { "type": "string" },
+      "preferred_areas": { "type": "string", "description": "Comma-separated Bangalore areas." },
+      "bhk": { "type": "string", "description": "Comma-separated BHK numbers." },
+      "budget_min_inr": { "type": "string" },
+      "budget_max_inr": { "type": "string" },
+      "move_in_by": { "type": "string", "description": "YYYY-MM-DD." },
+      "occupants": { "type": "string", "enum": ["family", "bachelor", "couple", "flatmates"] },
+      "veg_only": { "type": "string", "description": "true or false." },
+      "pet_friendly": { "type": "string", "description": "true or false." },
+      "parking_needed": { "type": "string", "enum": ["bike", "car", "either", "none"] },
+      "furnishing_preference": { "type": "string", "description": "Comma-separated: unfurnished, semi, fully." },
+      "work_from_home": { "type": "string", "description": "true or false." },
+      "preferred_language": { "type": "string", "enum": ["en", "hi", "kn"] },
+      "qual_score": { "type": "string", "description": "0-100." },
+      "intent": { "type": "string", "enum": ["just-browsing", "actively-looking", "urgent"] },
+      "notes": { "type": "string" }
+    }
+  },
+  "key": "custom_task",
+  "value": {
+    "method": "POST",
+    "param": {
+      "call_id": "%(call_id)s",
+      "name": "%(name)s",
+      "phone": "%(phone)s",
+      "email": "%(email)s",
+      "preferred_areas": "%(preferred_areas)s",
+      "bhk": "%(bhk)s",
+      "budget_min_inr": "%(budget_min_inr)s",
+      "budget_max_inr": "%(budget_max_inr)s",
+      "move_in_by": "%(move_in_by)s",
+      "occupants": "%(occupants)s",
+      "veg_only": "%(veg_only)s",
+      "pet_friendly": "%(pet_friendly)s",
+      "parking_needed": "%(parking_needed)s",
+      "furnishing_preference": "%(furnishing_preference)s",
+      "work_from_home": "%(work_from_home)s",
+      "preferred_language": "%(preferred_language)s",
+      "qual_score": "%(qual_score)s",
+      "intent": "%(intent)s",
+      "notes": "%(notes)s"
+    },
+    "url": "{{APP_URL}}/api/agent/upsert-lead",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

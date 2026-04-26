@@ -1,0 +1,25 @@
+{
+  "name": "compare_listings",
+  "description": "Use before recommending a listing, or when the caller asks which option is better. Compare 2-5 listing IDs returned by search_inventory across cost, deposit, area, furnishing, parking, age, amenities, commute, lift, and availability.",
+  "pre_call_message": "I will compare those side by side.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "call_id": { "type": "string", "description": "Use {call_sid} if available." },
+      "listing_ids": { "type": "string", "description": "Comma-separated listing IDs from search_inventory." }
+    },
+    "required": ["listing_ids"]
+  },
+  "key": "custom_task",
+  "value": {
+    "method": "POST",
+    "param": {
+      "call_id": "%(call_id)s",
+      "listing_ids": "%(listing_ids)s"
+    },
+    "url": "{{APP_URL}}/api/agent/compare",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

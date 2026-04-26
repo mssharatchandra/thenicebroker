@@ -62,7 +62,17 @@ Do not buy a phone number for the assignment. Use chat testing first, then **Tes
 
 ## 3. Configure Tools
 
-Use `agent/bolna-custom-functions.json` if Bolna lets you paste a full custom function JSON. Use `agent/tools.json` as the human-readable fallback if you need to fill the UI field-by-field.
+Paste one file at a time from `agent/bolna-functions/` if Bolna asks for custom function JSON. Do not paste the full `agent/tools.json` or `agent/bolna-custom-functions.json` array into a single function modal; the modal expects one JSON object with a string `name`.
+
+Files:
+
+- `agent/bolna-functions/upsert_lead.json`
+- `agent/bolna-functions/search_inventory.json`
+- `agent/bolna-functions/compare_listings.json`
+- `agent/bolna-functions/book_visit.json`
+- `agent/bolna-functions/send_summary.json`
+
+Use `agent/tools.json` as the human-readable fallback if you need to fill the UI field-by-field.
 
 Both files use flat parameters because they are easier to enter in Bolna's tool builder. The API also accepts nested JSON if needed.
 

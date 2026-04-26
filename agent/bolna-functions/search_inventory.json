@@ -1,0 +1,49 @@
+{
+  "name": "search_inventory",
+  "description": "Use after area or commute anchor, BHK, budget ceiling, and occupant type are known. Searches Bangalore rental inventory and returns 2-3 scored matches with honest tradeoffs.",
+  "pre_call_message": "Let me compare a few matching homes.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "call_id": { "type": "string", "description": "Use {call_sid} if available." },
+      "areas": { "type": "string", "description": "Comma-separated: HSR Layout, Whitefield, Indiranagar, Koramangala, BTM Layout, JP Nagar, Marathahalli, Electronic City." },
+      "bhk": { "type": "string", "description": "Comma-separated BHK numbers." },
+      "budget_min_inr": { "type": "string" },
+      "budget_max_inr": { "type": "string" },
+      "furnishing": { "type": "string", "description": "Comma-separated: unfurnished, semi, fully." },
+      "parking_needed": { "type": "string", "enum": ["bike", "car", "either", "none"] },
+      "pet_friendly": { "type": "string", "description": "true or false." },
+      "veg_only": { "type": "string", "description": "true or false." },
+      "occupants": { "type": "string", "enum": ["family", "bachelor", "couple", "flatmates"] },
+      "move_in_by": { "type": "string", "description": "YYYY-MM-DD." },
+      "min_carpet_sqft": { "type": "string" },
+      "amenities": { "type": "string", "description": "Comma-separated amenities." },
+      "limit": { "type": "string", "description": "Use 3 for the demo." }
+    },
+    "required": ["areas", "bhk", "budget_max_inr", "occupants"]
+  },
+  "key": "custom_task",
+  "value": {
+    "method": "POST",
+    "param": {
+      "call_id": "%(call_id)s",
+      "areas": "%(areas)s",
+      "bhk": "%(bhk)s",
+      "budget_min_inr": "%(budget_min_inr)s",
+      "budget_max_inr": "%(budget_max_inr)s",
+      "furnishing": "%(furnishing)s",
+      "parking_needed": "%(parking_needed)s",
+      "pet_friendly": "%(pet_friendly)s",
+      "veg_only": "%(veg_only)s",
+      "occupants": "%(occupants)s",
+      "move_in_by": "%(move_in_by)s",
+      "min_carpet_sqft": "%(min_carpet_sqft)s",
+      "amenities": "%(amenities)s",
+      "limit": "%(limit)s"
+    },
+    "url": "{{APP_URL}}/api/agent/search",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

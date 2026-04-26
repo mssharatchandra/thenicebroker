@@ -72,7 +72,7 @@ Status legend: `[x]` done, `[~]` in progress, `[ ]` pending.
 - [x] Phase 3 — Database: Drizzle schema (calls, leads, visits, shortlists), Neon connection, migrations. Committed.
 - [x] Phase 4 — API: Bolna webhook receiver, agent function-call endpoints (search/compare/upsert-lead/book-visit/send-summary). Committed.
 - [x] Phase 5 — Dashboard: Concierge inbox, call detail + transcript, listing comparison, visits calendar, unit economics. Committed.
-- [x] Phase 6 — Agent assets: system prompt, conversation flow, tool definitions, Bolna custom function JSON, eval cases — all in `agent/`. Committed.
+- [x] Phase 6 — Agent assets: system prompt, conversation flow, tool definitions, individual Bolna custom function JSON files, eval cases — all in `agent/`. Committed.
 - [x] Phase 7 — Docs: ARCHITECTURE, DEPLOYMENT, BOLNA_AGENT_SETUP, DEMO_SCRIPT, SUBMISSION_ANSWERS. Committed.
 - [x] Phase 8 — CI workflow + create GitHub repo (`gh`) + push. Committed and pushed.
 - [x] Phase 9 — Assignment deck: editable PPTX + preview contact sheet under `docs/deck/`. Committed.
@@ -96,6 +96,7 @@ Outside the build:
 | 2026-04-26 | No shadcn/ui | Keep deps lean; small Tailwind components by hand |
 | 2026-04-26 | Agent endpoints accept both nested JSON and flat Bolna tool parameters | Bolna's custom tool UI is easier to configure with flat fields; backend remains compatible with repo-native schemas |
 | 2026-04-26 | Neon schema applied to the user's database | Vercel only needs env vars + redeploy before live tool testing |
+| 2026-04-26 | Bolna function JSON split into one file per function | Bolna's custom function modal expects a single object; pasting an array raises "Function name must be a string" |
 
 ## What's intentionally *not* built (and why)
 

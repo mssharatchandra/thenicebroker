@@ -1,0 +1,29 @@
+{
+  "name": "send_summary",
+  "description": "Use near the end of the call when the caller wants the comparison in writing, or after a visit is booked.",
+  "pre_call_message": "I will send the comparison summary.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "call_id": { "type": "string", "description": "Use {call_sid} if available." },
+      "lead_id": { "type": "string", "description": "Optional if call_id is available and upsert_lead was called." },
+      "listing_ids": { "type": "string", "description": "Comma-separated listing IDs from search_inventory." },
+      "channel": { "type": "string", "enum": ["sms", "whatsapp", "email"] }
+    },
+    "required": ["listing_ids"]
+  },
+  "key": "custom_task",
+  "value": {
+    "method": "POST",
+    "param": {
+      "call_id": "%(call_id)s",
+      "lead_id": "%(lead_id)s",
+      "listing_ids": "%(listing_ids)s",
+      "channel": "%(channel)s"
+    },
+    "url": "{{APP_URL}}/api/agent/send-summary",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
