@@ -74,7 +74,9 @@ export async function POST(req: Request) {
   // Find or create a lead for this call.
   const existing = internalCallId
     ? await db.query.leads.findFirst({ where: eq(leads.callId, internalCallId) })
-    : null;
+    : lead.phone
+      ? await db.query.leads.findFirst({ where: eq(leads.phone, lead.phone) })
+      : null;
 
   const patch = {
     name: lead.name,

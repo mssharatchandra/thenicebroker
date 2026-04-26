@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { calls, getDb, isDbConfigured, leads, shortlists } from "@/lib/db";
 import { provider } from "@/lib/providers";
 import { compareListings } from "@/lib/compare/engine";
@@ -128,12 +128,17 @@ async function resolveLead(
   callId?: string,
 ): Promise<typeof leads.$inferSelect | null> {
   if (leadId) {
-    return (await db.query.leads.findFirst({ where: eq(leads.id, leadId) })) ?? null;
+    const lead = await db.query.leads.findFirst({ where: eq(leads.id, leadId) });
+    if (lead) return lead;
   }
-  if (!callId) return null;
-  const call = await db.query.calls.findFirst({
-    where: eq(calls.bolnaCallId, callId),
-  });
-  if (!call) return null;
-  return (await db.query.leads.findFirst({ where: eq(leads.callId, call.id) })) ?? null;
+  if (callId) {
+    const call = await db.query.calls.findFirst({
+      where: eq(calls.bolnaCallId, callId),
+    });
+    if (call) {
+      const lead = await db.query.leads.findFirst({ where: eq(leads.callId, call.id) });
+      if (lead) return lead;
+    }
+  }
+  return (await db.query.leads.findFirst({ orderBy: [desc(leads.updatedAt)] })) ?? null;
 }

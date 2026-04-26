@@ -60,7 +60,7 @@ export async function getDashboardData(): Promise<DashboardData> {
   if (isDbConfigured()) {
     try {
       const fromDb = await getDatabaseDashboardData();
-      if (fromDb.calls.length > 0) return fromDb;
+      if (fromDb.calls.length > 0 || fromDb.visits.length > 0) return fromDb;
     } catch {
       // Demo fallback keeps the dashboard useful while env/schema are being wired.
     }
@@ -121,6 +121,38 @@ async function getDatabaseDashboardData(): Promise<DashboardData> {
       transcript: transcriptFromJson(call.transcriptJson),
     };
   });
+
+  const callIds = new Set(callRows.map((call) => call.id));
+  const orphanLeads = leadRows.filter((lead) => !lead.callId || !callIds.has(lead.callId));
+  for (const lead of orphanLeads) {
+    dashboardCalls.push({
+      id: lead.id,
+      bolnaCallId: lead.callId ?? `chat-${lead.id.slice(0, 8)}`,
+      status: "in_progress",
+      callerName: lead.name ?? "Unknown caller",
+      phone: lead.phone ?? "No phone captured",
+      startedAt: lead.createdAt.toISOString(),
+      durationSec: 0,
+      qualScore: lead.qualScore ?? 0,
+      intent: normalizeIntent(lead.intent),
+      requirements: {
+        areas: lead.preferredAreas ?? [],
+        bhk: lead.bhk ?? [],
+        budget: formatBudget(lead.budgetMinInr ?? null, lead.budgetMaxInr ?? null),
+        moveInBy: lead.moveInBy ?? "Not captured",
+        occupants: lead.occupants ?? "Not captured",
+        parking: lead.parkingNeeded ?? "Not captured",
+        language: normalizeLanguage(lead.preferredLanguage),
+      },
+      shortlistedListingIds: [],
+      transcript: [
+        {
+          speaker: "Tool",
+          text: "Profile created from Bolna chat/function tool calls before a full call webhook was received.",
+        },
+      ],
+    });
+  }
 
   const visitCards: DashboardVisit[] = [];
   for (const visit of visitRows) {
