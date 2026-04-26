@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
-import { getDb, isDbConfigured, leads, shortlists } from "@/lib/db";
+import { calls, getDb, isDbConfigured, leads, shortlists } from "@/lib/db";
 import { provider } from "@/lib/providers";
 import { compareListings } from "@/lib/compare/engine";
 import { log } from "@/lib/logger";
+import { asRecord, asString, parseStringArray } from "@/lib/api/payload";
 
 const body = z.object({
   call_id: z.string().optional(),
-  lead_id: z.string(),
+  lead_id: z.string().optional(),
   listing_ids: z.array(z.string().min(1)).min(1).max(5),
   channel: z.enum(["sms", "whatsapp", "email"]).default("sms"),
 });
@@ -28,7 +29,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "invalid_json", detail: String(err) }, { status: 400 });
   }
 
-  const parsed = body.safeParse(raw);
+  const parsed = body.safeParse(coerceSummaryPayload(raw));
   if (!parsed.success) {
     return NextResponse.json(
       { ok: false, error: "invalid_request", issues: parsed.error.issues },
@@ -52,11 +53,16 @@ export async function POST(req: Request) {
   }
 
   const db = getDb();
-  const lead = await db.query.leads.findFirst({
-    where: eq(leads.id, parsed.data.lead_id),
-  });
+  const lead = await resolveLead(db, parsed.data.lead_id, parsed.data.call_id);
   if (!lead) {
-    return NextResponse.json({ ok: false, error: "lead_not_found" }, { status: 404 });
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "lead_not_found",
+        hint: "Pass lead_id or call /api/agent/upsert-lead before sending a summary.",
+      },
+      { status: 404 },
+    );
   }
 
   // Persist the shortlist: rank = order in the request.
@@ -103,4 +109,31 @@ function composeSummaryMessage(listings: Awaited<ReturnType<typeof provider.getM
   if (summary) lines.push("", summary);
   lines.push("", "Reply to this number if you want to book a visit. — TheNiceBroker");
   return lines.join("\n");
+}
+
+function coerceSummaryPayload(raw: unknown): unknown {
+  const r = asRecord(raw);
+  if (!r) return raw;
+  return {
+    call_id: asString(r.call_id),
+    lead_id: asString(r.lead_id),
+    listing_ids: parseStringArray(r.listing_ids),
+    channel: asString(r.channel),
+  };
+}
+
+async function resolveLead(
+  db: ReturnType<typeof getDb>,
+  leadId?: string,
+  callId?: string,
+): Promise<typeof leads.$inferSelect | null> {
+  if (leadId) {
+    return (await db.query.leads.findFirst({ where: eq(leads.id, leadId) })) ?? null;
+  }
+  if (!callId) return null;
+  const call = await db.query.calls.findFirst({
+    where: eq(calls.bolnaCallId, callId),
+  });
+  if (!call) return null;
+  return (await db.query.leads.findFirst({ where: eq(leads.callId, call.id) })) ?? null;
 }

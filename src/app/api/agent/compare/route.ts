@@ -3,6 +3,7 @@ import { z } from "zod";
 import { compareListings } from "@/lib/compare/engine";
 import { provider } from "@/lib/providers";
 import { log } from "@/lib/logger";
+import { asRecord, asString, parseStringArray } from "@/lib/api/payload";
 
 const body = z.object({
   call_id: z.string().optional(),
@@ -23,7 +24,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "invalid_json", detail: String(err) }, { status: 400 });
   }
 
-  const parsed = body.safeParse(raw);
+  const parsed = body.safeParse(coerceComparePayload(raw));
   if (!parsed.success) {
     return NextResponse.json(
       { ok: false, error: "invalid_request", issues: parsed.error.issues },
@@ -72,4 +73,13 @@ export async function POST(req: Request) {
       })),
     })),
   });
+}
+
+function coerceComparePayload(raw: unknown): unknown {
+  const r = asRecord(raw);
+  if (!r) return raw;
+  return {
+    call_id: asString(r.call_id),
+    listing_ids: parseStringArray(r.listing_ids),
+  };
 }

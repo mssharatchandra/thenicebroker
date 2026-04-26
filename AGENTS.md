@@ -72,7 +72,7 @@ Status legend: `[x]` done, `[~]` in progress, `[ ]` pending.
 - [x] Phase 3 — Database: Drizzle schema (calls, leads, visits, shortlists), Neon connection, migrations. Committed.
 - [x] Phase 4 — API: Bolna webhook receiver, agent function-call endpoints (search/compare/upsert-lead/book-visit/send-summary). Committed.
 - [x] Phase 5 — Dashboard: Concierge inbox, call detail + transcript, listing comparison, visits calendar, unit economics. Committed.
-- [x] Phase 6 — Agent assets: system prompt, conversation flow, tool definitions, eval cases — all in `agent/`. Committed.
+- [x] Phase 6 — Agent assets: system prompt, conversation flow, tool definitions, Bolna custom function JSON, eval cases — all in `agent/`. Committed.
 - [x] Phase 7 — Docs: ARCHITECTURE, DEPLOYMENT, BOLNA_AGENT_SETUP, DEMO_SCRIPT, SUBMISSION_ANSWERS. Committed.
 - [x] Phase 8 — CI workflow + create GitHub repo (`gh`) + push. Committed and pushed.
 - [x] Phase 9 — Assignment deck: editable PPTX + preview contact sheet under `docs/deck/`. Committed.
@@ -94,6 +94,8 @@ Outside the build:
 | 2026-04-26 | Honest comparison is a *prompt rule* and *data shape* (`caveats` field on every listing) | Trust angle is load-bearing for the deck — must be visible in code, not just slides |
 | 2026-04-26 | Postgres-only (no SQLite fallback) | Simpler. Neon free tier is 30 seconds. Same DB locally and prod. |
 | 2026-04-26 | No shadcn/ui | Keep deps lean; small Tailwind components by hand |
+| 2026-04-26 | Agent endpoints accept both nested JSON and flat Bolna tool parameters | Bolna's custom tool UI is easier to configure with flat fields; backend remains compatible with repo-native schemas |
+| 2026-04-26 | Neon schema applied to the user's database | Vercel only needs env vars + redeploy before live tool testing |
 
 ## What's intentionally *not* built (and why)
 
@@ -112,11 +114,11 @@ Outside the build:
 - Uses Zod for inbound validation. Logs raw payloads for debugging — review and tighten once we see real Bolna events.
 
 **Function tools (agent → us, called mid-call):**
-- `POST /api/agent/upsert-lead` — `{ call_id, lead }` → `{ lead_id }`
-- `POST /api/agent/search` — `{ filters }` → `{ listings, count }`
-- `POST /api/agent/compare` — `{ listing_ids }` → `{ comparison }`
-- `POST /api/agent/book-visit` — `{ listing_id, slot_iso, lead_id }` → `{ visit_id, confirmed_slot_iso }`
-- `POST /api/agent/send-summary` — `{ lead_id, listing_ids, channel }` → `{ sent }`
+- `POST /api/agent/upsert-lead` — accepts nested `{ call_id, lead }` or flat profile fields → `{ lead_id }`
+- `POST /api/agent/search` — accepts nested `{ filters }` or flat search fields → `{ listings, count }`
+- `POST /api/agent/compare` — `{ listing_ids }` as array or comma-separated string → comparison axes
+- `POST /api/agent/book-visit` — `{ listing_id, slot_iso, lead_id?, call_id? }` → `{ visit_id, confirmed_slot_iso }`
+- `POST /api/agent/send-summary` — `{ lead_id?, call_id?, listing_ids, channel }` → `{ sent }`
 
 ## Commands
 

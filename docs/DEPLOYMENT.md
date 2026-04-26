@@ -69,14 +69,12 @@ After deploy:
 curl -X POST https://your-vercel-domain.vercel.app/api/agent/search \
   -H "Content-Type: application/json" \
   -d '{
-    "filters": {
-      "areas": ["HSR Layout", "Whitefield"],
-      "bhk": [2],
-      "budget_max_inr": 48000,
-      "occupants": "couple",
-      "parking_needed": "car",
-      "limit": 3
-    }
+    "areas": "HSR Layout,Whitefield",
+    "bhk": "2",
+    "budget_max_inr": 48000,
+    "occupants": "couple",
+    "parking_needed": "car",
+    "limit": 3
   }'
 ```
 

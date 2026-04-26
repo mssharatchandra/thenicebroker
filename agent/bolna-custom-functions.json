@@ -1,0 +1,196 @@
+[
+  {
+    "name": "upsert_lead",
+    "description": "Use this whenever you learn or update the renter's profile: name, phone, preferred areas, BHK, budget, move-in date, occupants, parking, pets, veg-only, furnishing, WFH, language, urgency, or notes. Send only what is known.",
+    "pre_call_message": "Let me note that preference.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "call_id": { "type": "string", "description": "Use {call_sid} if available." },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "preferred_areas": { "type": "string", "description": "Comma-separated Bangalore areas." },
+        "bhk": { "type": "string", "description": "Comma-separated BHK numbers." },
+        "budget_min_inr": { "type": "string" },
+        "budget_max_inr": { "type": "string" },
+        "move_in_by": { "type": "string", "description": "YYYY-MM-DD." },
+        "occupants": { "type": "string", "enum": ["family", "bachelor", "couple", "flatmates"] },
+        "veg_only": { "type": "string", "description": "true or false." },
+        "pet_friendly": { "type": "string", "description": "true or false." },
+        "parking_needed": { "type": "string", "enum": ["bike", "car", "either", "none"] },
+        "furnishing_preference": { "type": "string", "description": "Comma-separated: unfurnished, semi, fully." },
+        "work_from_home": { "type": "string", "description": "true or false." },
+        "preferred_language": { "type": "string", "enum": ["en", "hi", "kn"] },
+        "qual_score": { "type": "string", "description": "0-100." },
+        "intent": { "type": "string", "enum": ["just-browsing", "actively-looking", "urgent"] },
+        "notes": { "type": "string" }
+      }
+    },
+    "key": "custom_task",
+    "value": {
+      "method": "POST",
+      "param": {
+        "call_id": "%(call_id)s",
+        "name": "%(name)s",
+        "phone": "%(phone)s",
+        "email": "%(email)s",
+        "preferred_areas": "%(preferred_areas)s",
+        "bhk": "%(bhk)s",
+        "budget_min_inr": "%(budget_min_inr)s",
+        "budget_max_inr": "%(budget_max_inr)s",
+        "move_in_by": "%(move_in_by)s",
+        "occupants": "%(occupants)s",
+        "veg_only": "%(veg_only)s",
+        "pet_friendly": "%(pet_friendly)s",
+        "parking_needed": "%(parking_needed)s",
+        "furnishing_preference": "%(furnishing_preference)s",
+        "work_from_home": "%(work_from_home)s",
+        "preferred_language": "%(preferred_language)s",
+        "qual_score": "%(qual_score)s",
+        "intent": "%(intent)s",
+        "notes": "%(notes)s"
+      },
+      "url": "{{APP_URL}}/api/agent/upsert-lead",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "name": "search_inventory",
+    "description": "Use after area or commute anchor, BHK, budget ceiling, and occupant type are known. Searches Bangalore rental inventory and returns 2-3 scored matches with honest tradeoffs.",
+    "pre_call_message": "Let me compare a few matching homes.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "call_id": { "type": "string", "description": "Use {call_sid} if available." },
+        "areas": { "type": "string", "description": "Comma-separated: HSR Layout, Whitefield, Indiranagar, Koramangala, BTM Layout, JP Nagar, Marathahalli, Electronic City." },
+        "bhk": { "type": "string", "description": "Comma-separated BHK numbers." },
+        "budget_min_inr": { "type": "string" },
+        "budget_max_inr": { "type": "string" },
+        "furnishing": { "type": "string", "description": "Comma-separated: unfurnished, semi, fully." },
+        "parking_needed": { "type": "string", "enum": ["bike", "car", "either", "none"] },
+        "pet_friendly": { "type": "string", "description": "true or false." },
+        "veg_only": { "type": "string", "description": "true or false." },
+        "occupants": { "type": "string", "enum": ["family", "bachelor", "couple", "flatmates"] },
+        "move_in_by": { "type": "string", "description": "YYYY-MM-DD." },
+        "min_carpet_sqft": { "type": "string" },
+        "amenities": { "type": "string", "description": "Comma-separated amenities." },
+        "limit": { "type": "string", "description": "Use 3 for the demo." }
+      },
+      "required": ["areas", "bhk", "budget_max_inr", "occupants"]
+    },
+    "key": "custom_task",
+    "value": {
+      "method": "POST",
+      "param": {
+        "call_id": "%(call_id)s",
+        "areas": "%(areas)s",
+        "bhk": "%(bhk)s",
+        "budget_min_inr": "%(budget_min_inr)s",
+        "budget_max_inr": "%(budget_max_inr)s",
+        "furnishing": "%(furnishing)s",
+        "parking_needed": "%(parking_needed)s",
+        "pet_friendly": "%(pet_friendly)s",
+        "veg_only": "%(veg_only)s",
+        "occupants": "%(occupants)s",
+        "move_in_by": "%(move_in_by)s",
+        "min_carpet_sqft": "%(min_carpet_sqft)s",
+        "amenities": "%(amenities)s",
+        "limit": "%(limit)s"
+      },
+      "url": "{{APP_URL}}/api/agent/search",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "name": "compare_listings",
+    "description": "Use before recommending a listing, or when the caller asks which option is better. Compare 2-5 listing IDs returned by search_inventory across cost, deposit, area, furnishing, parking, age, amenities, commute, lift, and availability.",
+    "pre_call_message": "I will compare those side by side.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "call_id": { "type": "string", "description": "Use {call_sid} if available." },
+        "listing_ids": { "type": "string", "description": "Comma-separated listing IDs from search_inventory." }
+      },
+      "required": ["listing_ids"]
+    },
+    "key": "custom_task",
+    "value": {
+      "method": "POST",
+      "param": {
+        "call_id": "%(call_id)s",
+        "listing_ids": "%(listing_ids)s"
+      },
+      "url": "{{APP_URL}}/api/agent/compare",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "name": "book_visit",
+    "description": "Use only after the caller chooses a listing and confirms a concrete visit date and time.",
+    "pre_call_message": "I am booking that visit now.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "call_id": { "type": "string", "description": "Use {call_sid} if available." },
+        "lead_id": { "type": "string", "description": "Optional if call_id is available and upsert_lead was called." },
+        "listing_id": { "type": "string" },
+        "slot_iso": { "type": "string", "description": "ISO datetime with timezone, e.g. 2026-04-27T17:30:00+05:30." },
+        "channel": { "type": "string", "enum": ["in-person", "video"] },
+        "notes": { "type": "string" }
+      },
+      "required": ["listing_id", "slot_iso"]
+    },
+    "key": "custom_task",
+    "value": {
+      "method": "POST",
+      "param": {
+        "call_id": "%(call_id)s",
+        "lead_id": "%(lead_id)s",
+        "listing_id": "%(listing_id)s",
+        "slot_iso": "%(slot_iso)s",
+        "channel": "%(channel)s",
+        "notes": "%(notes)s"
+      },
+      "url": "{{APP_URL}}/api/agent/book-visit",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "name": "send_summary",
+    "description": "Use near the end of the call when the caller wants the comparison in writing, or after a visit is booked.",
+    "pre_call_message": "I will send the comparison summary.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "call_id": { "type": "string", "description": "Use {call_sid} if available." },
+        "lead_id": { "type": "string", "description": "Optional if call_id is available and upsert_lead was called." },
+        "listing_ids": { "type": "string", "description": "Comma-separated listing IDs from search_inventory." },
+        "channel": { "type": "string", "enum": ["sms", "whatsapp", "email"] }
+      },
+      "required": ["listing_ids"]
+    },
+    "key": "custom_task",
+    "value": {
+      "method": "POST",
+      "param": {
+        "call_id": "%(call_id)s",
+        "lead_id": "%(lead_id)s",
+        "listing_ids": "%(listing_ids)s",
+        "channel": "%(channel)s"
+      },
+      "url": "{{APP_URL}}/api/agent/send-summary",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  }
+]

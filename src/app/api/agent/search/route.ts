@@ -3,6 +3,7 @@ import { z } from "zod";
 import { provider } from "@/lib/providers";
 import type { Amenity, Area, Furnishing } from "@/lib/providers/types";
 import { log } from "@/lib/logger";
+import { asBoolean, asNumber, asRecord, asString, parseNumberArray, parseStringArray } from "@/lib/api/payload";
 
 const areas: [Area, ...Area[]] = [
   "HSR Layout",
@@ -69,7 +70,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "invalid_json", detail: String(err) }, { status: 400 });
   }
 
-  const parsed = searchBody.safeParse(body);
+  const parsed = searchBody.safeParse(coerceSearchPayload(body));
   if (!parsed.success) {
     return NextResponse.json(
       { ok: false, error: "invalid_filters", issues: parsed.error.issues },
@@ -131,4 +132,27 @@ export async function POST(req: Request) {
     count: compact.length,
     listings: compact,
   });
+}
+
+function coerceSearchPayload(raw: unknown): unknown {
+  const r = asRecord(raw);
+  if (!r || "filters" in r) return raw;
+  return {
+    call_id: asString(r.call_id),
+    filters: {
+      areas: parseStringArray(r.areas),
+      bhk: parseNumberArray(r.bhk),
+      budget_min_inr: asNumber(r.budget_min_inr),
+      budget_max_inr: asNumber(r.budget_max_inr),
+      furnishing: parseStringArray(r.furnishing),
+      parking_needed: asString(r.parking_needed),
+      pet_friendly: asBoolean(r.pet_friendly),
+      veg_only: asBoolean(r.veg_only),
+      occupants: asString(r.occupants),
+      move_in_by: asString(r.move_in_by),
+      min_carpet_sqft: asNumber(r.min_carpet_sqft),
+      amenities: parseStringArray(r.amenities),
+      limit: asNumber(r.limit),
+    },
+  };
 }

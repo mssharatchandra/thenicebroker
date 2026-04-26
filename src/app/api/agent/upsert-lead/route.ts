@@ -3,6 +3,7 @@ import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { calls, getDb, isDbConfigured, leads } from "@/lib/db";
 import { log } from "@/lib/logger";
+import { asBoolean, asNumber, asRecord, asString, parseNumberArray, parseStringArray } from "@/lib/api/payload";
 
 const body = z.object({
   call_id: z.string().optional(),
@@ -43,7 +44,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "invalid_json", detail: String(err) }, { status: 400 });
   }
 
-  const parsed = body.safeParse(raw);
+  const parsed = body.safeParse(coerceLeadPayload(raw));
   if (!parsed.success) {
     return NextResponse.json(
       { ok: false, error: "invalid_request", issues: parsed.error.issues },
@@ -118,4 +119,32 @@ export async function POST(req: Request) {
 
   log.info("agent.upsert_lead: created", { call_id: parsed.data.call_id, lead_id: inserted?.id });
   return NextResponse.json({ ok: true, lead_id: inserted?.id, action: "created" });
+}
+
+function coerceLeadPayload(raw: unknown): unknown {
+  const r = asRecord(raw);
+  if (!r || "lead" in r) return raw;
+  return {
+    call_id: asString(r.call_id),
+    lead: {
+      name: asString(r.name),
+      phone: asString(r.phone),
+      email: asString(r.email),
+      preferred_areas: parseStringArray(r.preferred_areas ?? r.areas),
+      bhk: parseNumberArray(r.bhk),
+      budget_min_inr: asNumber(r.budget_min_inr),
+      budget_max_inr: asNumber(r.budget_max_inr),
+      move_in_by: asString(r.move_in_by),
+      occupants: asString(r.occupants),
+      veg_only: asBoolean(r.veg_only),
+      pet_friendly: asBoolean(r.pet_friendly),
+      parking_needed: asString(r.parking_needed),
+      furnishing_preference: parseStringArray(r.furnishing_preference ?? r.furnishing),
+      work_from_home: asBoolean(r.work_from_home),
+      preferred_language: asString(r.preferred_language),
+      qual_score: asNumber(r.qual_score),
+      intent: asString(r.intent),
+      notes: asString(r.notes),
+    },
+  };
 }
