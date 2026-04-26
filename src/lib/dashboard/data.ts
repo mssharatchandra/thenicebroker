@@ -80,8 +80,8 @@ export async function getDemoDashboardData(): Promise<DashboardData> {
     source: "demo",
     sourceNote: "Demo data is shown until Neon receives live Bolna events.",
     inventoryCount,
-    calls,
-    visits,
+    calls: sortCallsNewestFirst(calls),
+    visits: sortVisitsNewestFirst(visits),
     recommendedListings,
     comparison,
     economics,
@@ -156,6 +156,7 @@ async function getDatabaseDashboardData(): Promise<DashboardData> {
     });
   }
 
+  const dashboardCallsSorted = sortCallsNewestFirst(dashboardCalls);
   const visitCards: DashboardVisit[] = [];
   for (const visit of visitRows) {
     const listing = await provider.getById(visit.listingId);
@@ -176,15 +177,23 @@ async function getDatabaseDashboardData(): Promise<DashboardData> {
     source: "database",
     sourceNote: "Live database data from Bolna webhooks and agent tool calls.",
     inventoryCount: await provider.count(),
-    calls: dashboardCalls,
-    visits: visitCards,
+    calls: dashboardCallsSorted,
+    visits: sortVisitsNewestFirst(visitCards),
     recommendedListings,
     comparison: compareListings(recommendedListings),
     economics: buildEconomics({
-      monthlyCalls: Math.max(4000, dashboardCalls.length * 1200),
-      visitConversionPct: dashboardCalls.length === 0 ? 0 : 31,
+      monthlyCalls: Math.max(4000, dashboardCallsSorted.length * 1200),
+      visitConversionPct: dashboardCallsSorted.length === 0 ? 0 : 31,
     }),
   };
+}
+
+function sortCallsNewestFirst(input: DashboardCall[]): DashboardCall[] {
+  return [...input].sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime());
+}
+
+function sortVisitsNewestFirst(input: DashboardVisit[]): DashboardVisit[] {
+  return [...input].sort((a, b) => new Date(b.scheduledFor).getTime() - new Date(a.scheduledFor).getTime());
 }
 
 function buildDemoCalls(): DashboardCall[] {

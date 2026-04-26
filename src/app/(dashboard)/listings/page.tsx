@@ -75,7 +75,7 @@ export default async function ListingsPage({
           </div>
         </Panel>
 
-        <Panel title={`Showing ${filtered.length} homes`}>
+        <Panel title={`Showing ${filtered.length} homes - newest first`}>
           <div className="grid gap-3 xl:grid-cols-2">
             {filtered.map((listing) => (
               <article key={listing.id} className="rounded border border-stone-200 p-4">

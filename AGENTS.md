@@ -101,6 +101,7 @@ Outside the build:
 | 2026-04-26 | Added Leads and Demand dashboard tabs | Shows captured renter profiles, inventory coverage, and area-demand signal beyond the call inbox |
 | 2026-04-26 | Prompt now asks for name/phone near the beginning | Prevents anonymous duplicate leads and makes bookings/summaries feel production-real |
 | 2026-04-26 | Upsert now ignores placeholder values and merges recent anonymous chat rows | Bolna chat can send partial tool calls before call IDs exist; backend should absorb that gracefully |
+| 2026-04-26 | Dashboard calls, visits, and listing explorer are newest-first | Operators expect the freshest conversations and newly-added mock inventory at the top during demos |
 
 ## What's intentionally *not* built (and why)
 

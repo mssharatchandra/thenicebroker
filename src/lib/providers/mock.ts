@@ -28,7 +28,7 @@ export class MockInventoryProvider implements InventoryProvider {
   }
 
   async listAll(): Promise<Listing[]> {
-    return [...this.listings].sort((a, b) => a.id.localeCompare(b.id));
+    return [...this.listings].sort((a, b) => listingFreshness(b) - listingFreshness(a));
   }
 
   async count(): Promise<number> {
@@ -57,6 +57,11 @@ export class MockInventoryProvider implements InventoryProvider {
     scored.sort((a, b) => b.score - a.score);
     return scored.slice(0, limit);
   }
+}
+
+function listingFreshness(listing: Listing): number {
+  const numericId = Number.parseInt(listing.id.replace(/\D/g, ""), 10);
+  return Number.isFinite(numericId) ? numericId : 0;
 }
 
 function passesHardFilters(listing: Listing, f: SearchFilters): boolean {
