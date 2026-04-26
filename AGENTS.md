@@ -102,6 +102,9 @@ Outside the build:
 | 2026-04-26 | Prompt now asks for name/phone near the beginning | Prevents anonymous duplicate leads and makes bookings/summaries feel production-real |
 | 2026-04-26 | Upsert now ignores placeholder values and merges recent anonymous chat rows | Bolna chat can send partial tool calls before call IDs exist; backend should absorb that gracefully |
 | 2026-04-26 | Dashboard calls, visits, and listing explorer are newest-first | Operators expect the freshest conversations and newly-added mock inventory at the top during demos |
+| 2026-04-26 | `move_in_by` is a soft scoring penalty, not a hard filter | Bolna agent commonly sends first-of-month dates ("2026-05-01") which silently dropped most listings; flagging it lets the agent narrate the tradeoff instead of returning empty |
+| 2026-04-26 | Search route maps known localities to parent Areas; unknown areas are dropped, not 400 | Bolna chat passed "AECS Layout" as an area, hit the Zod enum, and the agent read empty results as "no inventory"; soft-mapping fixes the funnel |
+| 2026-04-26 | System prompt instructs locality→area mapping + retry-broaden on empty results | Closes the loop so the agent never tells a caller "nothing matches" before it has tried widening |
 
 ## What's intentionally *not* built (and why)
 

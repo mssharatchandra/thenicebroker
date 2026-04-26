@@ -85,7 +85,9 @@ function passesHardFilters(listing: Listing, f: SearchFilters): boolean {
     // not a hard fail but heavily down-weighted later
   }
 
-  if (f.moveInBy && listing.availableFromIso > f.moveInBy) return false;
+  // moveInBy is intentionally NOT a hard filter — the agent often passes the
+  // first of the month (e.g. "2026-05-01") which would drop most listings
+  // that become available mid-month. We score it softly below instead.
 
   if (f.minCarpetSqft && listing.carpetAreaSqft < f.minCarpetSqft) return false;
 
@@ -205,6 +207,22 @@ function scoreListing(listing: Listing, f: SearchFilters): ScoredListing {
   if (f.occupants === "bachelor" && !listing.bachelorAllowed) {
     score -= 20;
     flags.push(`owner prefers families`);
+  }
+
+  // Soft handling for move-in date — small penalty if available after the
+  // requested date, larger penalty the further out. Never drop the listing.
+  if (f.moveInBy && listing.availableFromIso > f.moveInBy) {
+    const days = Math.max(
+      0,
+      Math.round(
+        (new Date(listing.availableFromIso).getTime() - new Date(f.moveInBy).getTime()) /
+          (1000 * 60 * 60 * 24),
+      ),
+    );
+    if (days > 0) {
+      score -= Math.min(15, Math.ceil(days / 2));
+      flags.push(`available from ${listing.availableFromIso} (after your ${f.moveInBy} target)`);
+    }
   }
 
   return {

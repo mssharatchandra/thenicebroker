@@ -33,6 +33,42 @@ const amenityValues: [Amenity, ...Amenity[]] = [
   "indoorGames",
 ];
 
+const LOCALITY_TO_AREA: Record<string, Area> = {
+  "aecs layout": "Marathahalli",
+  munnekollal: "Marathahalli",
+  brookefield: "Whitefield",
+  kadugodi: "Whitefield",
+  "hsr sector 1": "HSR Layout",
+  "hsr sector 4": "HSR Layout",
+  "kr puram lake road": "KR Puram",
+  "bennigana halli": "Old Madras Road",
+  "bellandur gate": "Bellandur",
+  "green glen layout": "Bellandur",
+  doddakannelli: "Sarjapur Road",
+  kaikondrahalli: "Sarjapur Road",
+  "koramangala 6th block": "Koramangala",
+  "btm 2nd stage": "BTM Layout",
+  "jp nagar 6th phase": "JP Nagar",
+  "hal 2nd stage": "Indiranagar",
+  "neeladri road": "Electronic City",
+};
+
+function normalizeAreas(input: unknown): Area[] | undefined {
+  const raw = parseStringArray(input);
+  if (!raw) return undefined;
+  const validAreas = new Set<Area>(areas);
+  const out: Area[] = [];
+  for (const candidate of raw) {
+    if (validAreas.has(candidate as Area)) {
+      out.push(candidate as Area);
+      continue;
+    }
+    const mapped = LOCALITY_TO_AREA[candidate.toLowerCase().trim()];
+    if (mapped) out.push(mapped);
+  }
+  return out.length > 0 ? Array.from(new Set(out)) : undefined;
+}
+
 const searchBody = z.object({
   call_id: z.string().optional(),
   filters: z.object({
@@ -141,11 +177,18 @@ export async function POST(req: Request) {
 
 function coerceSearchPayload(raw: unknown): unknown {
   const r = asRecord(raw);
-  if (!r || "filters" in r) return raw;
+  if (!r) return raw;
+  if ("filters" in r) {
+    const filters = asRecord(r.filters);
+    if (filters && "areas" in filters) {
+      return { ...r, filters: { ...filters, areas: normalizeAreas(filters.areas) } };
+    }
+    return raw;
+  }
   return {
     call_id: asString(r.call_id),
     filters: {
-      areas: parseStringArray(r.areas),
+      areas: normalizeAreas(r.areas ?? r.area ?? r.locality ?? r.localities),
       bhk: parseNumberArray(r.bhk),
       budget_min_inr: asNumber(r.budget_min_inr),
       budget_max_inr: asNumber(r.budget_max_inr),

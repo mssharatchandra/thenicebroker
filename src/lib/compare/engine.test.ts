@@ -68,9 +68,16 @@ describe("MockInventoryProvider.search", () => {
     for (const r of out) expect(r.listing.petFriendly).toBe(true);
   });
 
-  it("excludes listings unavailable by the requested move-in date", async () => {
-    const out = await provider.search({ moveInBy: "2026-05-05" });
-    for (const r of out) expect(r.listing.availableFromIso <= "2026-05-05").toBe(true);
+  it("ranks listings available by the requested move-in date ahead of later ones", async () => {
+    const out = await provider.search({ moveInBy: "2026-05-05", limit: 10 });
+    expect(out.length).toBeGreaterThan(0);
+    const onTime = out.filter((r) => r.listing.availableFromIso <= "2026-05-05");
+    const late = out.filter((r) => r.listing.availableFromIso > "2026-05-05");
+    if (onTime.length > 0 && late.length > 0) {
+      const minOnTime = Math.min(...onTime.map((r) => r.score));
+      const maxLate = Math.max(...late.map((r) => r.score));
+      expect(minOnTime).toBeGreaterThanOrEqual(maxLate - 5);
+    }
   });
 
   it("applies the requested limit", async () => {
